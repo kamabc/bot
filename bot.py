@@ -26,7 +26,7 @@ def save_json(dict):
     now = datetime.datetime.now()
     total_json = os.path.join(JSON_DIR, 'total.json')
     daily_json = os.path.join(JSON_DIR, '{0:%Y%m%d}.json'.format(now-datetime.timedelta(hours=3)))
-    
+
     # トータル
     with open(total_json, 'r', encoding='utf-8') as f:
         saved_charas = json.load(f)
@@ -36,6 +36,9 @@ def save_json(dict):
                 saved_charas[chara] += characters[chara]
             else:
                 saved_charas[chara] = characters[chara]
+
+        if (0 <= now.hour <= 1) and (0 <= now.minute <= 15):
+            print(saved_charas)
 
     # 書き込み
     with open(total_json, 'w', encoding='utf-8') as f:
@@ -65,7 +68,7 @@ def ranking():
     now = datetime.datetime.now()
     total_json = os.path.join(JSON_DIR, 'total.json')
     daily_json = os.path.join(JSON_DIR, '{0:%Y%m%d}.json'.format(now-datetime.timedelta(hours=3)))
-    
+
     with open(daily_json, 'r', encoding='utf-8') as f:
         daily_rank = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)[0:3]
         random_chara = random.choice(daily_rank)
@@ -107,7 +110,7 @@ def tweet():
 
     # プリンと
     print('--- [{0}]'.format(now))
-    
+
     # ツイート収集機構
     for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items():
         if (status.created_at - since).total_seconds() < 0:
