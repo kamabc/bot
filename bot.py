@@ -8,9 +8,6 @@ import os
 # ディレクトリ
 JSON_DIR = 'json'
 TWEET_STATUS_FILE = 'tweet_status.txt'
-now = datetime.datetime.now()
-total_json = os.path.join(JSON_DIR, 'total.json')
-daily_json = os.path.join(JSON_DIR, '{0:%Y%m%d}.json'.format(now-datetime.timedelta(hours=3)))
 re_kanji = re.compile(r'^[\u4E00-\u9FD0]+$')
 characters={}
 
@@ -26,6 +23,10 @@ def get_chara(text):
 
 # jsonにぶち込む
 def save_json(dict):
+    now = datetime.datetime.now()
+    total_json = os.path.join(JSON_DIR, 'total.json')
+    daily_json = os.path.join(JSON_DIR, '{0:%Y%m%d}.json'.format(now-datetime.timedelta(hours=3)))
+    
     # トータル
     with open(total_json, 'r', encoding='utf-8') as f:
         saved_charas = json.load(f)
@@ -61,6 +62,10 @@ def save_json(dict):
 
 # ランキング
 def ranking():
+    now = datetime.datetime.now()
+    total_json = os.path.join(JSON_DIR, 'total.json')
+    daily_json = os.path.join(JSON_DIR, '{0:%Y%m%d}.json'.format(now-datetime.timedelta(hours=3)))
+    
     with open(daily_json, 'r', encoding='utf-8') as f:
         daily_rank = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)[0:3]
         random_chara = random.choice(daily_rank)
@@ -97,6 +102,7 @@ def tweet():
     banned_words = 'ネットビジネス|副業'
 
     # 日付類
+    now = datetime.datetime.now()
     since = now - datetime.timedelta(hours=9, minutes=15)
 
     # ツイート収集機構
