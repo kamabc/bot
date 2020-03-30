@@ -105,6 +105,9 @@ def tweet():
     now = datetime.datetime.now()
     since = now - datetime.timedelta(hours=9, minutes=15)
 
+    # プリンと
+    print('--- [{0}]'.format(now))
+    
     # ツイート収集機構
     for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items():
         if (status.created_at - since).total_seconds() < 0:
