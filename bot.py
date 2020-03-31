@@ -32,7 +32,7 @@ def save_json(dict):
         saved_charas = json.load(f)
         for chara in characters:
             # 中にあるか
-            if characters[chara] in saved_charas:
+            if chara in saved_charas:
                 saved_charas[chara] += characters[chara]
             else:
                 saved_charas[chara] = characters[chara]
@@ -112,7 +112,7 @@ def tweet():
     print('--- [{0}]'.format(now))
 
     # ツイート収集機構
-    for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items(250):
+    for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items():
         if (status.created_at - since).total_seconds() < 0:
             break
 
