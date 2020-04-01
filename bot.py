@@ -9,17 +9,17 @@ import os
 JSON_DIR = 'json'
 TWEET_STATUS_FILE = 'tweet_status.txt'
 re_kanji = re.compile(r'^[\u4E00-\u9FD0]+$')
-characters={}
+characters = {}
 
 # 感じを取得して辞書式に入れてくれる関数
-def get_chara(text):
+def get_chara(text, dict):
     for chara in text:
         if re_kanji.fullmatch(chara):
             # 辞書にあるかどうかで分岐
-            if chara in characters:
-                characters[chara] += 1
+            if chara in dict:
+                dict[chara] += 1
             else:
-                characters[chara] = 1
+                dict[chara] = 1
 
 # jsonにぶち込む
 def save_json(dict):
@@ -30,12 +30,12 @@ def save_json(dict):
     # トータル
     with open(total_json, 'r', encoding='utf-8') as f:
         saved_charas = json.load(f)
-        for chara in characters:
+        for chara in dict:
             # 中にあるか
             if chara in saved_charas:
-                saved_charas[chara] += characters[chara]
+                saved_charas[chara] += dict[chara]
             else:
-                saved_charas[chara] = characters[chara]
+                saved_charas[chara] = dict[chara]
 
         if (0 <= now.hour <= 1) and (0 <= now.minute <= 15):
             print(saved_charas)
@@ -52,12 +52,12 @@ def save_json(dict):
 
     with open(daily_json, 'r', encoding='utf-8') as f:
         saved_charas = json.load(f)
-        for chara in characters:
+        for chara in dict:
             # 中にあるか
-            if characters[chara] in saved_charas:
-                saved_charas[chara] += characters[chara]
+            if chara in saved_charas:
+                saved_charas[chara] += dict[chara]
             else:
-                saved_charas[chara] = characters[chara]
+                saved_charas[chara] = dict[chara]
 
     # 書き込み
     with open(daily_json, 'w', encoding='utf-8') as f:
@@ -71,14 +71,15 @@ def ranking():
 
     with open(daily_json, 'r', encoding='utf-8') as f:
         daily_rank = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)[0:3]
-        random_chara = random.choice(daily_rank)
+        random_chara = random.choice(characters)
 
     with open(total_json, 'r', encoding='utf-8') as f:
         total_rank = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)[0:3]
 
     return [daily_rank, total_rank, random_chara]
 
-
+def reset_dict(dict):
+    dict = {}
 
 # --------------------------------------------------------------------------
 import tweepy
@@ -110,9 +111,12 @@ def tweet():
 
     # プリンと
     print('--- [{0}]'.format(now))
+    
+    # reset
+    reset_
 
     # ツイート収集機構
-    for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items():
+    for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items(250):
         if (status.created_at - since).total_seconds() < 0:
             break
 
