@@ -140,9 +140,8 @@ def tweet():
                 print('Succeed in posting a tweet.')
             except:
                 print('Failed to post a tweet.')
-                raise
-
-            f.write('True')
+            finally:
+                f.write('True')
 
     elif (now.hour % 12 == 8) and (re.search(r'True', isTweeted)):
         with open(TWEET_STATUS_FILE, 'w', encoding='utf-8') as f:
