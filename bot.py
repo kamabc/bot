@@ -121,7 +121,7 @@ def tweet():
             break
 
         else:
-            get_chara(status.text)
+            get_chara(status.text, characters)
             print('Got tweet made by @{1} at [{0}].'.format(status.created_at+datetime.timedelta(hours=9), status.id))
 
     save_json(characters)
