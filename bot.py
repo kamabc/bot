@@ -113,7 +113,7 @@ def tweet():
     print('--- [{0}]'.format(now))
     
     # reset
-    reset_
+    reset_dict(characters)
 
     # ツイート収集機構
     for status in tweepy.Cursor(api.home_timeline, exclude_replies=True, exclude_retweets=True, lang='ja', since=since).items(250):
