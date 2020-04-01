@@ -1,3 +1,4 @@
+# recent update: 04/01_10:00
 import json
 import datetime
 import random
@@ -70,8 +71,9 @@ def ranking():
     daily_json = os.path.join(JSON_DIR, '{0:%Y%m%d}.json'.format(now-datetime.timedelta(hours=3)))
 
     with open(daily_json, 'r', encoding='utf-8') as f:
-        daily_rank = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)[0:3]
-        random_chara = random.choice(characters)
+        daily_total = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)
+        daily_rank = daily_total[0:3]
+        random_chara = random.choice(daily_total)
 
     with open(total_json, 'r', encoding='utf-8') as f:
         total_rank = sorted(json.load(f).items(), key=lambda x:x[1], reverse=True)[0:3]
@@ -91,7 +93,6 @@ app = Flask(__name__)
 @app.route('/')
 def tweet():
     # app作成
-    # キーとか
     CONSUMER_KEY = os.environ['CONSUMER_KEY']
     CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
     ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
@@ -110,8 +111,8 @@ def tweet():
     since = now - datetime.timedelta(hours=9, minutes=15)
 
     # プリンと
-    print('--- [{0}]'.format(now))
-    
+    print('--- [{0}] ---'.format(now))
+
     # reset
     reset_dict(characters)
 
@@ -139,6 +140,7 @@ def tweet():
                 print('Succeed in posting a tweet.')
             except:
                 print('Failed to post a tweet.')
+                raise
 
             f.write('True')
 
